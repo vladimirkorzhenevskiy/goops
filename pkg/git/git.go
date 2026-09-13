@@ -11,6 +11,7 @@ func Exec(args ...string) (string, error) {
 	cmd := exec.Command("git", args...)
 
 	var out bytes.Buffer
+
 	cmd.Stdout = &out
 
 	if err := cmd.Run(); err != nil {

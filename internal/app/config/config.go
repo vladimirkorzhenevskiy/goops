@@ -5,6 +5,7 @@ import (
 
 	"github.com/joho/godotenv"
 	"github.com/kelseyhightower/envconfig"
+
 	"github.com/vladimirkorzhenevskiy/goops/pkg/llm"
 )
 

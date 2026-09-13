@@ -13,9 +13,10 @@ import (
 	"strconv"
 	"strings"
 
+	"golang.org/x/sync/errgroup"
+
 	"github.com/vladimirkorzhenevskiy/goops/pkg/gitlab"
 	"github.com/vladimirkorzhenevskiy/goops/pkg/llm"
-	"golang.org/x/sync/errgroup"
 )
 
 var ErrInvalidURL = errors.New("invalid gitlab merge request url")
@@ -192,18 +193,21 @@ func PrepareDiffForAI(rawDiff string) string {
 	}
 
 	lines := strings.Split(rawDiff, "\n")
+
 	var result []string
 
 	for _, line := range lines {
 		// Оставляем заголовки файлов и ханки (@@ -2,58 +2,38 @@)
 		if strings.HasPrefix(line, "diff ") || strings.HasPrefix(line, "--- ") || strings.HasPrefix(line, "+++ ") || strings.HasPrefix(line, "@@ ") {
 			result = append(result, line)
+
 			continue
 		}
 
 		// Если строка добавлена — оставляем обязательно
 		if strings.HasPrefix(line, "+") {
 			result = append(result, line)
+
 			continue
 		}
 
@@ -211,6 +215,7 @@ func PrepareDiffForAI(rawDiff string) string {
 		// чтобы ИИ знал, что тут было удаление, но не читал 600 строк текста!
 		if strings.HasPrefix(line, "-") {
 			result = append(result, "-") // Оставляем просто минус без текста
+
 			continue
 		}
 
